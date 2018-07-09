@@ -11,4 +11,8 @@ respDF = fullDF[["petal.width"]]
 DM = xgb.DMatrix(varsDF, label=respDF)
 parameters={"max_depth":1, "learning_rate":0.1}
 
-b = xgbkv.XGBKVRegressor(parameters,  DM,  100)
+a = xgbkv.XGBKVRegressor(parameters,  DM,  100, metrics=["min", "max", "rmse",  "mae"])
+
+a.predict(DM)
+
+b = xgbkv.XGBKVRegressor(parameters,  DM,  100, 3,   metrics=["quintiles",  "mae"])
