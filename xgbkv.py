@@ -1,6 +1,7 @@
 import xgboost as xgb
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 def provide_average(pred,  act):
     return(np.mean(pred))
@@ -194,8 +195,12 @@ def XGBKVRegressor(params,  trainData,  nRounds, evalRounds=10,  metrics=["avera
         for i in range(1, len(graphfodder)):
             if roundPlusMetrics[i] in metrics0D:
                 if ideals:
-                    plt.plot(graphfodder[0], idealfodder[i], "r")
+                    plt.plot(graphfodder[0], idealfodder[i], "y")
+                    yellow_patch = mpatches.Patch(color='yellow', label='ideal')
+                    blue_patch = mpatches.Patch(color='blue', label='predicted')
+                    plt.legend(handles=[blue_patch, yellow_patch])
                 plt.plot(graphfodder[0], graphfodder[i],  "b.-")
+                
                 plt.xlim((0, max(graphfodder[0])*1.1))
                 plt.ylim((min(min(graphfodder[i])*1.1, 0), max(max(idealfodder[i]),  max(graphfodder[i]))*1.1))
                 plt.xlabel("rounds of training")
@@ -211,13 +216,21 @@ def XGBKVRegressor(params,  trainData,  nRounds, evalRounds=10,  metrics=["avera
             idealData=np.array([idealfodder[expandedMetrics.index(subMetric)+1] for subMetric in subMetrics])
             for i in range(len(relevantData[0])):
                 if ideals:
-                    plt.plot([1, 2, 3, 4, 5], list(idealData[0:5, i]), "y")
+                    plt.plot([1, 2, 3, 4, 5], list(idealData[0:5, i]), "y.-")
+                    yellow_patch = mpatches.Patch(color='yellow', label='ideal')
                 plt.plot([1, 2, 3, 4, 5], list(relevantData[0:5, i]),  "b.-")
+                blue_patch = mpatches.Patch(color='blue', label='predicted')
                 plt.plot([1, 2, 3, 4, 5], list(relevantData[5:10, i]), "r.-")
+                red_patch = mpatches.Patch(color='red', label='actual')
+                if ideals:
+                    plt.legend(handles=[blue_patch, red_patch, yellow_patch])
+                else:
+                    plt.legend(handles=[blue_patch, red_patch])
                 plt.xlim(0.5, 5.5)
                 plt.ylim(relevantData.min()-(relevantData.max()-relevantData.min())*0.1,  relevantData.max()+(relevantData.max()-relevantData.min())*0.1)
                 plt.xlabel("quintile (predicted)")
                 plt.ylabel("average response")
+                plt.title('quintiles, round '+str(graphfodder[0][i]))
                 plt.savefig(graphPrefix+"_deciles_round"+str(graphfodder[0][i])+".png")
                 plt.clf()
     
