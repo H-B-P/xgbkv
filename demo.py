@@ -16,3 +16,4 @@ a = xgbkv.XGBKVRegressor(parameters,  DM,  100, metrics=["min", "max", "rmse",  
 a.predict(DM)
 
 b = xgbkv.XGBKVRegressor(parameters,  DM,  100, 3,   metrics=["quintiles",  "mae"])
+

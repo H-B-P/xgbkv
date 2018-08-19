@@ -18,47 +18,21 @@ def provide_max(pred, act):
 def provide_rmse(pred, act):
     return(np.sqrt(sum((pred-act)*(pred-act))/len(pred)))
 
-def provide_quintile_pred(pred, act, n):
-    inds=pred.argsort()
-    sortedPred=pred[inds]
-    quintileSubset=sortedPred[len(pred)*(n-1)/5:len(pred)*n/5]
-    return sum(quintileSubset)/len(quintileSubset)
+def provide_Xile_pred_provider(n, N):
+    def provide_Xile_pred(pred, act):
+        inds=pred.argsort()
+        sortedPred=pred[inds]
+        quintileSubset=sortedPred[len(pred)*(n-1)/N:len(pred)*n/N]
+        return sum(quintileSubset)/len(quintileSubset)
+    return provide_Xile_pred
 
-def provide_quintile1_pred(pred, act):
-    return provide_quintile_pred(pred, act, 1)
-    
-def provide_quintile2_pred(pred, act):
-    return provide_quintile_pred(pred, act, 2)
-
-def provide_quintile3_pred(pred, act):
-    return provide_quintile_pred(pred, act, 3)
-
-def provide_quintile4_pred(pred, act):
-    return provide_quintile_pred(pred, act, 4)
-
-def provide_quintile5_pred(pred, act):
-    return provide_quintile_pred(pred, act, 5)
-
-def provide_quintile_act(pred, act, n):
-    inds=pred.argsort()
-    sortedAct=act[inds]
-    quintileSubset=sortedAct[len(act)*(n-1)/5:len(act)*n/5]
-    return sum(quintileSubset)/len(quintileSubset)
-
-def provide_quintile1_act(pred, act):
-    return provide_quintile_act(pred, act, 1)
-
-def provide_quintile2_act(pred, act):
-    return provide_quintile_act(pred, act, 2)
-
-def provide_quintile3_act(pred, act):
-    return provide_quintile_act(pred, act, 3)
-
-def provide_quintile4_act(pred, act):
-    return provide_quintile_act(pred, act, 4)
-
-def provide_quintile5_act(pred, act):
-    return provide_quintile_act(pred, act, 5)
+def provide_Xile_act_provider(n, N):
+    def provide_Xile_act(pred, act):
+        inds=pred.argsort()
+        sortedAct=act[inds]
+        quintileSubset=sortedAct[len(pred)*(n-1)/N:len(pred)*n/N]
+        return sum(quintileSubset)/len(quintileSubset)
+    return provide_Xile_act
 
 metrics1DLookup={
 "quintiles":["qu1 pred", "qu2 pred", "qu3 pred", "qu4 pred",  "qu5 pred",  "qu1 act",  "qu2 act",  "qu3 act",  "qu4 act",  "qu5 act"]}
@@ -69,16 +43,16 @@ evalLookup={
 "min":provide_min, 
 "max":provide_max, 
 "rmse":provide_rmse, 
-"qu1 pred":provide_quintile1_pred, 
-"qu2 pred":provide_quintile2_pred, 
-"qu3 pred":provide_quintile3_pred, 
-"qu4 pred":provide_quintile4_pred, 
-"qu5 pred":provide_quintile5_pred, 
-"qu1 act":provide_quintile1_act, 
-"qu2 act":provide_quintile2_act, 
-"qu3 act":provide_quintile3_act, 
-"qu4 act":provide_quintile4_act, 
-"qu5 act":provide_quintile5_act 
+"qu1 pred":provide_Xile_pred_provider(1, 5), 
+"qu2 pred":provide_Xile_pred_provider(2, 5), 
+"qu3 pred":provide_Xile_pred_provider(3, 5), 
+"qu4 pred":provide_Xile_pred_provider(4, 5),  
+"qu5 pred":provide_Xile_pred_provider(5, 5), 
+"qu1 act":provide_Xile_act_provider(1, 5), 
+"qu2 act":provide_Xile_act_provider(2, 5), 
+"qu3 act":provide_Xile_act_provider(3, 5), 
+"qu4 act":provide_Xile_act_provider(4, 5), 
+"qu5 act":provide_Xile_act_provider(5, 5), 
 }
 
 def XGBKVRegressor(params,  trainData,  nRounds, evalRounds=10,  metrics=["average", "mae", "min", "max",  "rmse"],  testData=None, outputs=["terminal","csv",  "graphs"], csvName="output.csv",  graphPrefix="output", ideals=True):
@@ -235,3 +209,5 @@ def XGBKVRegressor(params,  trainData,  nRounds, evalRounds=10,  metrics=["avera
                 plt.clf()
     
     return bst
+
+
