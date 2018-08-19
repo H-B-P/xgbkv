@@ -1,0 +1,4 @@
+round,accuracy,pred0 act0,pred1 act0,pred2 act0,pred0 act1,pred1 act1,pred2 act1,pred0 act2,pred1 act2,pred2 act2
+10,0.973333333333,50,0,0,0,47,3,0,1,49
+20,0.973333333333,50,0,0,0,47,3,0,1,49
+30,0.966666666667,50,0,0,0,47,3,0,2,48
